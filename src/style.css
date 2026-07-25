@@ -66,4 +66,12 @@
     background-clip: text;
     color: transparent;
   }
+
+  .bg-gold-gradient {
+    background: linear-gradient(180deg, #f0e08a 0%, #e3c84a 28%, #b8962a 62%, #8a6e18 100%);
+  }
+
+  .bg-gold-gradient:hover {
+    background: linear-gradient(180deg, #f5e9a0 0%, #ebd25a 28%, #c9a534 62%, #9a7c20 100%);
+  }
 }

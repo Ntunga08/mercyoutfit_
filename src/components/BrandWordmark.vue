@@ -10,6 +10,7 @@ const sizes = {
   sm: { mark: 'h-9 w-9', mercy: 'text-base', outfit: 'text-2xl' },
   md: { mark: 'h-12 w-12', mercy: 'text-xl', outfit: 'text-3xl' },
   lg: { mark: 'h-16 w-16', mercy: 'text-3xl sm:text-4xl', outfit: 'text-5xl sm:text-6xl' },
+  xl: { mark: 'h-28 w-28 sm:h-32 sm:w-32', mercy: 'text-5xl sm:text-6xl', outfit: 'text-7xl sm:text-8xl' },
 }
 </script>
 

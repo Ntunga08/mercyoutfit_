@@ -9,7 +9,7 @@ defineProps({
 })
 
 const variants = {
-  primary: 'bg-teal text-navy hover:bg-teal-bright',
+  primary: 'bg-gold-gradient text-navy shadow-[0_0_24px_rgb(227_200_74_/_0.25)]',
   secondary: 'bg-navy text-teal-bright hover:bg-navy-soft',
   ghost: 'bg-surface text-ink border border-line hover:bg-mist',
   danger: 'bg-danger text-white hover:opacity-90',
