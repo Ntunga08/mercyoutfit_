@@ -1,13 +1,7 @@
-const currency = new Intl.NumberFormat('en-TZ', {
-  style: 'currency',
-  currency: 'TZS',
-  maximumFractionDigits: 0,
-})
-
 export function formatMoney(value) {
   const n = Number(value ?? 0)
   if (Number.isNaN(n)) return '—'
-  return currency.format(n)
+  return `TSh ${Math.round(n).toLocaleString('en-TZ')}`
 }
 
 export function formatDate(value) {
@@ -28,13 +22,6 @@ export function formatDateTime(value) {
     hour: '2-digit',
     minute: '2-digit',
   })
-}
-
-export function variantLabel(variant) {
-  if (!variant) return '—'
-  if (typeof variant === 'string') return variant
-  const parts = [variant.product_name || variant.name, variant.size, variant.color].filter(Boolean)
-  return parts.join(' · ') || `Variant #${variant.id}`
 }
 
 export function paymentLabel(method) {
@@ -58,4 +45,22 @@ export function expenseCategoryLabel(category) {
     other: 'Other',
   }
   return map[category] || category
+}
+
+export function segmentLabel(segment) {
+  const map = {
+    all: 'All opted-in',
+    recent_30: 'Purchased last 30 days',
+    repeat: 'Repeat customers (2+)',
+  }
+  return map[segment] || segment
+}
+
+export function apiErrorMessage(err, fallback = 'Something went wrong.') {
+  const data = err?.response?.data
+  if (!data) return fallback
+  if (typeof data === 'string') return data
+  if (Array.isArray(data)) return data.join(' ')
+  if (data.detail) return typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail)
+  return Object.values(data).flat().join(' ') || fallback
 }

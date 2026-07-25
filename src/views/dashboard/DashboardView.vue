@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { reportsApi } from '@/api/reports'
-import { formatMoney } from '@/utils/format'
+import { formatMoney, apiErrorMessage } from '@/utils/format'
 import StatCard from '@/components/ui/StatCard.vue'
 import LoadingBlock from '@/components/ui/LoadingBlock.vue'
 import ErrorBanner from '@/components/ui/ErrorBanner.vue'
@@ -33,7 +33,7 @@ async function load() {
     bestSellers.value = bestRes.data
     trend.value = trendRes.data
   } catch (err) {
-    error.value = err.response?.data?.detail || 'Could not load overview.'
+    error.value = apiErrorMessage(err, 'Could not load dashboard.')
   } finally {
     loading.value = false
   }
@@ -44,75 +44,38 @@ onMounted(load)
 
 <template>
   <div>
-    <PageHeader
-      :title="`Hi, ${auth.displayName}`"
-      subtitle="What the floor looks like today."
-    />
-
+    <PageHeader :title="`Hello, ${auth.displayName}`" subtitle="Today’s sales pulse and stock health." />
     <ErrorBanner v-if="error" class="mb-6" :message="error" />
     <LoadingBlock v-if="loading" />
 
     <template v-else-if="summary">
-      <!-- Metrics as a ledger strip, not floating cards -->
-      <div class="border border-line bg-surface">
-        <div
-          class="grid sm:grid-cols-3"
-          :class="auth.isOwner ? 'xl:grid-cols-6' : ''"
-        >
-          <StatCard
-            label="Today"
-            :value="formatMoney(summary.today_sales_total)"
-            tone="teal"
-            hint="Sales so far"
-          />
-          <StatCard
-            label="This month"
-            :value="formatMoney(summary.month_revenue)"
-            hint="Revenue"
-          />
-          <StatCard
-            label="Low stock"
-            :value="summary.low_stock_count"
-            :tone="summary.low_stock_count > 0 ? 'warn' : 'success'"
-            hint="Need attention"
-          />
-          <template v-if="auth.isOwner">
-            <StatCard
-              label="Gross profit"
-              :value="formatMoney(summary.month_gross_profit)"
-              tone="success"
-            />
-            <StatCard
-              label="Expenses"
-              :value="formatMoney(summary.month_expenses)"
-            />
-            <StatCard
-              label="Net"
-              :value="formatMoney(summary.month_net_profit)"
-              tone="teal"
-            />
-          </template>
-        </div>
+      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <StatCard label="Today’s sales" :value="formatMoney(summary.today_sales_total)" tone="teal" />
+        <StatCard label="Month revenue" :value="formatMoney(summary.month_revenue)" />
+        <StatCard
+          label="Low stock items"
+          :value="summary.low_stock_count"
+          :tone="summary.low_stock_count > 0 ? 'warn' : 'success'"
+        />
+        <template v-if="auth.isOwner">
+          <StatCard label="Gross profit" :value="formatMoney(summary.month_gross_profit)" tone="success" />
+          <StatCard label="Month expenses" :value="formatMoney(summary.month_expenses)" />
+          <StatCard label="Net profit" :value="formatMoney(summary.month_net_profit)" tone="teal" />
+        </template>
       </div>
 
-      <div class="mt-8 grid gap-8 lg:grid-cols-2">
-        <section>
-          <div class="mb-4 flex items-baseline justify-between gap-3 border-b border-line pb-2">
-            <h3 class="font-display text-lg text-ink">Last 14 days</h3>
-            <span class="text-[13px] text-stone">Daily sales</span>
+      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <section class="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+          <div class="mb-5 flex items-baseline justify-between">
+            <h3 class="font-display text-lg text-ink">Daily sales trend</h3>
+            <span class="text-xs text-stone">Last 14 days</span>
           </div>
-          <div v-if="!trend.length" class="py-10 text-center text-[15px] text-stone">
-            No sales in this window.
-          </div>
-          <div v-else class="flex h-40 items-end gap-1">
-            <div
-              v-for="day in trend"
-              :key="day.day"
-              class="flex flex-1 flex-col items-center justify-end"
-            >
+          <div v-if="!trend.length" class="py-10 text-center text-sm text-stone">No sales in this window.</div>
+          <div v-else class="flex h-44 items-end gap-1.5">
+            <div v-for="day in trend" :key="day.day" class="flex flex-1 flex-col items-center justify-end">
               <div
-                class="w-full bg-teal"
-                :style="{ height: `${Math.max(6, (Number(day.total) / maxTrend) * 100)}%` }"
+                class="w-full rounded-t-md bg-teal"
+                :style="{ height: `${Math.max(8, (Number(day.total) / maxTrend) * 100)}%` }"
                 :title="`${day.day}: ${formatMoney(day.total)}`"
               />
               <span class="mt-2 truncate text-[10px] text-stone">
@@ -122,34 +85,30 @@ onMounted(load)
           </div>
         </section>
 
-        <section>
-          <div class="mb-4 flex items-baseline justify-between gap-3 border-b border-line pb-2">
+        <section class="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+          <div class="mb-5 flex items-baseline justify-between">
             <h3 class="font-display text-lg text-ink">Best sellers</h3>
-            <span class="text-[13px] text-stone">30 days</span>
+            <span class="text-xs text-stone">Last 30 days</span>
           </div>
-          <div v-if="!bestSellers.length" class="py-10 text-center text-[15px] text-stone">
-            No sales yet.
-          </div>
-          <ol v-else class="divide-y divide-line border border-line bg-surface">
+          <div v-if="!bestSellers.length" class="py-10 text-center text-sm text-stone">No sales yet.</div>
+          <ul v-else class="space-y-2">
             <li
               v-for="(item, i) in bestSellers.slice(0, 8)"
               :key="item.variant__id"
-              class="flex items-center gap-3 px-3 py-2.5"
+              class="flex items-center gap-3 rounded-xl bg-mist px-3 py-2.5"
             >
-              <span class="w-5 text-[13px] tabular-nums text-stone">{{ i + 1 }}</span>
+              <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-soft text-xs font-bold text-teal">
+                {{ i + 1 }}
+              </span>
               <div class="min-w-0 flex-1">
-                <p class="truncate text-[15px] font-medium text-ink">
-                  {{ item.variant__product__name }}
-                </p>
-                <p class="truncate text-[13px] text-stone">
+                <p class="truncate text-sm font-semibold">{{ item.variant__product__name }}</p>
+                <p class="truncate text-xs text-stone">
                   {{ [item.variant__size, item.variant__color].filter(Boolean).join(' · ') || '—' }}
                 </p>
               </div>
-              <span class="text-[14px] font-semibold tabular-nums text-ink">
-                {{ item.units_sold }}
-              </span>
+              <span class="text-sm font-semibold text-teal">{{ item.units_sold }} sold</span>
             </li>
-          </ol>
+          </ul>
         </section>
       </div>
     </template>

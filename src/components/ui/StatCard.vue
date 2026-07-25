@@ -5,21 +5,19 @@ defineProps({
   hint: String,
   tone: { type: String, default: 'default' },
 })
+
+const tones = {
+  default: 'border-line',
+  teal: 'border-teal/30 bg-teal-soft/40',
+  warn: 'border-warn/30 bg-warn-soft',
+  success: 'border-success/30 bg-success-soft',
+}
 </script>
 
 <template>
-  <div class="border-b border-line py-4 pr-4 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 sm:pr-6">
-    <p class="text-[13px] text-stone">{{ label }}</p>
-    <p
-      class="mt-1 font-display text-[1.65rem] leading-none tracking-tight text-ink"
-      :class="{
-        'text-teal': tone === 'teal',
-        'text-warn': tone === 'warn',
-        'text-success': tone === 'success',
-      }"
-    >
-      {{ value }}
-    </p>
-    <p v-if="hint" class="mt-2 text-[13px] text-stone">{{ hint }}</p>
+  <div class="rounded-2xl border bg-surface p-5 shadow-sm shadow-ink/5" :class="tones[tone]">
+    <p class="text-xs font-semibold uppercase tracking-wide text-stone">{{ label }}</p>
+    <p class="mt-2 font-display text-2xl text-ink sm:text-3xl">{{ value }}</p>
+    <p v-if="hint" class="mt-2 text-sm text-stone">{{ hint }}</p>
   </div>
 </template>

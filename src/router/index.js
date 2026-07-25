@@ -14,30 +14,15 @@ const routes = [
     component: AppLayout,
     meta: { requiresAuth: true },
     children: [
-      {
-        path: '',
-        name: 'dashboard',
-        component: () => import('@/views/dashboard/DashboardView.vue'),
-      },
+      { path: '', name: 'dashboard', component: () => import('@/views/dashboard/DashboardView.vue') },
+      { path: 'pos', name: 'pos', component: () => import('@/views/sales/PosView.vue') },
+      { path: 'sales', name: 'sales', component: () => import('@/views/sales/SalesHistoryView.vue') },
+      { path: 'inventory', name: 'inventory', component: () => import('@/views/inventory/InventoryView.vue') },
       {
         path: 'products',
         name: 'products',
         component: () => import('@/views/products/ProductsView.vue'),
-      },
-      {
-        path: 'inventory',
-        name: 'inventory',
-        component: () => import('@/views/inventory/InventoryView.vue'),
-      },
-      {
-        path: 'pos',
-        name: 'pos',
-        component: () => import('@/views/sales/PosView.vue'),
-      },
-      {
-        path: 'sales',
-        name: 'sales',
-        component: () => import('@/views/sales/SalesHistoryView.vue'),
+        meta: { requiresOwner: true },
       },
       {
         path: 'expenses',
@@ -45,12 +30,21 @@ const routes = [
         component: () => import('@/views/expenses/ExpensesView.vue'),
         meta: { requiresOwner: true },
       },
+      {
+        path: 'staff',
+        name: 'staff',
+        component: () => import('@/views/staff/StaffView.vue'),
+        meta: { requiresOwner: true },
+      },
+      {
+        path: 'marketing',
+        name: 'marketing',
+        component: () => import('@/views/marketing/MarketingView.vue'),
+        meta: { requiresOwner: true },
+      },
     ],
   },
-  {
-    path: '/:pathMatch(.*)*',
-    redirect: '/',
-  },
+  { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
 const router = createRouter({
@@ -64,12 +58,10 @@ router.beforeEach((to) => {
     const redirect = guestOnly()
     if (redirect) return redirect
   }
-
   if (to.matched.some((r) => r.meta.requiresAuth)) {
     const redirect = requiresAuth()
     if (redirect) return redirect
   }
-
   if (to.matched.some((r) => r.meta.requiresOwner)) {
     const redirect = requiresOwner()
     if (redirect) return redirect

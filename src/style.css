@@ -2,31 +2,34 @@
 
 @theme {
   --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Source Serif 4", ui-serif, Georgia, "Times New Roman", serif;
+  --font-display: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-script: "Great Vibes", cursive;
 
-  /* Cool paper workspace — not cream, not dark SaaS */
-  --color-ink: #161616;
-  --color-ink-soft: #2c2c2c;
-  --color-ink-muted: #4a4a4a;
+  --color-ink: #141210;
+  --color-ink-soft: #2a2620;
+  --color-ink-muted: #4a453c;
 
-  /* Wine accent — fashion floor, not teal glow */
-  --color-teal: #7a2e3a;
-  --color-teal-bright: #933445;
-  --color-teal-soft: #f3e6e8;
+  /* Logo gold — from MERCY Outfit sign */
+  --color-teal: #b8962a;
+  --color-teal-bright: #e3c84a;
+  --color-teal-soft: #fbf6e4;
 
-  --color-canvas: #eceef0;
-  --color-mist: #f7f8f9;
+  --color-canvas: #f4f2ec;
+  --color-mist: #faf9f6;
   --color-surface: #ffffff;
 
-  --color-stone: #5c5c5c;
-  --color-line: #cfd3d6;
+  --color-stone: #6b6560;
+  --color-line: #e4dfd4;
+
+  --color-navy: #08090c;
+  --color-navy-soft: #12151c;
 
   --color-danger: #b42318;
   --color-danger-soft: #fef3f2;
   --color-success: #2f6b4f;
   --color-success-soft: #eef6f1;
-  --color-warn: #9a6700;
-  --color-warn-soft: #fff8eb;
+  --color-warn: #b8962a;
+  --color-warn-soft: #fbf6e4;
 }
 
 @layer base {
@@ -43,13 +46,24 @@
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--color-teal) 22%, white);
-    color: var(--color-ink);
+    background: #e3c84a;
+    color: #141210;
   }
 }
 
 @layer utilities {
   .font-display {
     font-family: var(--font-display);
+  }
+
+  .font-script {
+    font-family: var(--font-script);
+  }
+
+  .text-gold-gradient {
+    background: linear-gradient(180deg, #f0e08a 0%, #e3c84a 35%, #b8962a 70%, #8a6e18 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }

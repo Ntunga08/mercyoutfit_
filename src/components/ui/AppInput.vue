@@ -9,6 +9,7 @@ defineProps({
   error: String,
   hint: String,
   autocomplete: String,
+  maxlength: [Number, String],
 })
 
 defineEmits(['update:modelValue'])
@@ -16,7 +17,7 @@ defineEmits(['update:modelValue'])
 
 <template>
   <label class="block">
-    <span v-if="label" class="mb-1 block text-[13px] font-medium text-ink">{{ label }}</span>
+    <span v-if="label" class="mb-1.5 block text-sm font-medium text-ink">{{ label }}</span>
     <input
       :type="type"
       :value="modelValue"
@@ -24,11 +25,12 @@ defineEmits(['update:modelValue'])
       :required="required"
       :disabled="disabled"
       :autocomplete="autocomplete"
-      class="w-full rounded-sm border border-line bg-surface px-3 py-2 text-[15px] text-ink outline-none transition placeholder:text-stone/50 focus:border-teal focus:ring-1 focus:ring-teal disabled:bg-mist disabled:opacity-70"
-      :class="{ 'border-danger focus:border-danger focus:ring-danger': error }"
+      :maxlength="maxlength"
+      class="w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-stone/60 focus:border-teal focus:ring-2 focus:ring-teal/20 disabled:bg-canvas disabled:opacity-70"
+      :class="{ 'border-danger focus:border-danger focus:ring-danger/20': error }"
       @input="$emit('update:modelValue', $event.target.value)"
     />
-    <span v-if="error" class="mt-1 block text-[13px] text-danger">{{ error }}</span>
-    <span v-else-if="hint" class="mt-1 block text-[13px] text-stone">{{ hint }}</span>
+    <span v-if="error" class="mt-1 block text-xs text-danger">{{ error }}</span>
+    <span v-else-if="hint" class="mt-1 block text-xs text-stone">{{ hint }}</span>
   </label>
 </template>
