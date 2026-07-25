@@ -1,1 +1,55 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Source Serif 4", ui-serif, Georgia, "Times New Roman", serif;
+
+  /* Cool paper workspace — not cream, not dark SaaS */
+  --color-ink: #161616;
+  --color-ink-soft: #2c2c2c;
+  --color-ink-muted: #4a4a4a;
+
+  /* Wine accent — fashion floor, not teal glow */
+  --color-teal: #7a2e3a;
+  --color-teal-bright: #933445;
+  --color-teal-soft: #f3e6e8;
+
+  --color-canvas: #eceef0;
+  --color-mist: #f7f8f9;
+  --color-surface: #ffffff;
+
+  --color-stone: #5c5c5c;
+  --color-line: #cfd3d6;
+
+  --color-danger: #b42318;
+  --color-danger-soft: #fef3f2;
+  --color-success: #2f6b4f;
+  --color-success-soft: #eef6f1;
+  --color-warn: #9a6700;
+  --color-warn-soft: #fff8eb;
+}
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply m-0 min-h-screen bg-canvas font-sans text-ink;
+  }
+
+  #app {
+    @apply min-h-screen;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-teal) 22%, white);
+    color: var(--color-ink);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+}

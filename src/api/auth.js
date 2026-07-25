@@ -1,9 +1,13 @@
 import api from './axios'
 
-export function fetchStaffList() {
-  return api.get('auth/staff/')
+export function login(username, password) {
+  return api.post('auth/login/', { username, password })
 }
 
-export function createStaff(data) {
-  return api.post('auth/staff/', data)
+export function refreshToken(refresh) {
+  return api.post('auth/login/refresh/', { refresh })
+}
+
+export function fetchMe() {
+  return api.get('auth/me/')
 }
